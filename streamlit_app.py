@@ -2,7 +2,8 @@
 import streamlit
 import pandas
 import requests
-
+import snowflake.connector
+from irllib.error import URLError
 
 my_fruit_list = pandas.read_csv("https://uni-lab-files.s3.us-west-2.amazonaws.com/dabw/fruit_macros.txt")
 my_fruit_list = my_fruit_list.set_index('Fruit')
@@ -34,7 +35,7 @@ fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_c
 fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 streamlit.dataframe(fruityvice_normalized)
 
-import snowflake.connector
+streamlit,stop()
 
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
@@ -44,4 +45,6 @@ streamlit.header("the fruit load list contains:")
 streamlit.dataframe(my_data_rows)
 # allow the edn user to add a fruit to the list
 add_my_fruit = streamlit.text_input('What fruit would you like information about?', 'jackfruit')
+
+#my_cur.execute("insert into fruit_load_list values('from streamlit')")
 
